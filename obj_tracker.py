@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(1,'/home/atharva/traffic_detection_system/backend')
+sys.path.insert(1,'/backend')
 import time, random
 import numpy as np
 from absl import app, flags, logging
@@ -24,12 +24,12 @@ import json
 from bson import ObjectId
 import time
 
-flags.DEFINE_string('classes', '/home/atharva/traffic_detection_system/backend/data/labels/coco.names', 'path to classes file')
-flags.DEFINE_string('weights', '/home/atharva/traffic_detection_system/backend/weights/yolov3.tf',
+flags.DEFINE_string('classes', '/backend/data/labels/coco.names', 'path to classes file')
+flags.DEFINE_string('weights', '/backend/weights/yolov3.tf',
                     'path to weights file')
 flags.DEFINE_boolean('tiny', False, 'yolov3 or yolov3-tiny')
 flags.DEFINE_integer('size', 416, 'resize images to')
-flags.DEFINE_string('video', '/home/atharva/traffic_detection_system/backend/data/video/video2.mp4',
+flags.DEFINE_string('video', '/backend/data/video/video2.mp4',
                     'path to video file or number for webcam)')
 flags.DEFINE_string('output', None, 'path to output video')
 flags.DEFINE_string('output_format', 'XVID', 'codec used in VideoWriter when saving video to file')
@@ -59,7 +59,7 @@ def main(f_app):
     nms_max_overlap = 1.0
     
     #initialize deep sort
-    model_filename = '/home/atharva/traffic_detection_system/backend/model_data/mars-small128.pb'
+    model_filename = '/backend/model_data/mars-small128.pb'
     encoder = gdet.create_box_encoder(model_filename, batch_size=1)
     metric = nn_matching.NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
     tracker = Tracker(metric)
@@ -70,16 +70,16 @@ def main(f_app):
 
     yolo = YoloV3(classes=80)
 
-    yolo.load_weights('/home/atharva/traffic_detection_system/backend/weights/yolov3.tf')
+    yolo.load_weights('/backend/weights/yolov3.tf')
     logging.info('weights loaded')
 
-    class_names = [c.strip() for c in open('/home/atharva/traffic_detection_system/backend/data/labels/coco.names').readlines()]
+    class_names = [c.strip() for c in open('/backend/data/labels/coco.names').readlines()]
     logging.info('classes loaded')
 
     try:
-        vid = cv2.VideoCapture(int('/home/atharva/traffic_detection_system/backend/data/video/cam5.mkv'))
+        vid = cv2.VideoCapture(int('/backend/data/video/cam5.mkv'))
     except:
-        vid = cv2.VideoCapture('/home/atharva/traffic_detection_system/backend/data/video/cam5.mkv')
+        vid = cv2.VideoCapture('/backend/data/video/cam5.mkv')
 
     out = None
 
@@ -109,7 +109,6 @@ def main(f_app):
     pos_line1 = 258
     pos_line2 = 335
     offset = 4
-    str1 = "/home/atharva/traffic_detection_system/dr_test/cam5/cam5_fr"
 
     vehicle_obj = []
     vehicle_speed = []
@@ -266,9 +265,6 @@ def main(f_app):
         # print fps on screen 
         fps  = ( fps + (1./(time.time()-t1)) ) / 2
 
-        if frame%5==0:
-            str2 = str1 + str(frame) + ".png"
-            cv2.imwrite(str2,img)
         # cv2.imshow('output', img)
 
         # if FLAGS.output:
